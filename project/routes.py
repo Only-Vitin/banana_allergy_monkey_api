@@ -1,9 +1,15 @@
-import pandas as pd
-from flask_restful import Resource
+import jwt
 import bcrypt
-from flask import jsonify, request, make_response
-from config_mysql import connection
+import pandas as pd
 
+from datetime import datetime, timedelta
+
+from flask_restful import Resource
+from flask import jsonify, request, make_response
+
+from os import environ
+from config_api import app
+from config_mysql import connection
 from _constants import TABLE_REGISTER
 
 
@@ -26,16 +32,30 @@ class Register(Resource):
 
     def post(self):
         data_json = request.json
+        user = data_json["user"]
         passwd = data_json["passwd"]
+        passwd = passwd.encode('utf-8')
         
-        data_json["passwd"] = bcrypt.hashpw(passwd, bcrypt.gensalt())
+        hash = bcrypt.hashpw(passwd, bcrypt.gensalt())
+        data_json["passwd"] = hash
+
+        if bcrypt.hashpw(passwd.encode('utf-8'), hash.encode('utf-8')) == hash.encode('utf-8'):
+            payload = {
+                "username": user,
+                "exp": datetime.utcnow() + timedelta(hours=1000)
+            }
+            secret_key = environ["SECRET_KEY"]
+            token = jwt.encode(payload, secret_key, algorithm="HS256")
+
+        data_json["token"] = token
 
         register_df = pd.read_sql_table(TABLE_REGISTER, connection)
         data_df = pd.DataFrame([data_json])
         register_df = pd.concat([register_df, data_df], ignore_index=True)
-
+        
         register_df.to_sql(TABLE_REGISTER, connection, if_exists="replace", index=False)
         return make_response(jsonify({"message": "Usuário cadastrado com sucesso"}), 200)
+
 
 class VerificaLogin(Resource):
     def get(self):
@@ -47,11 +67,10 @@ class VerificaLogin(Resource):
         result = register_df.query("@user in user")
 
         if result.empty:
-            return False
+            return None
         else:
             hash = result.iloc[0, 3]
             print(hash)
             if bcrypt.hashpw(passwd.encode('utf-8'), hash.encode('utf-8')) == hash.encode('utf-8'):
-                return True
-            return False
-
+                return make_response(jsonify({"token": result['token']}))
+            return None

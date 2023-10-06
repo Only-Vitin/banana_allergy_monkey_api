@@ -1,8 +1,11 @@
+from os import environ
+from dotenv import load_dotenv
+
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
 
-from _login_mysql import HOST, USER, PASSWD, DB
 
+load_dotenv()
 
 def mysql_connection(host, user, passwd, database):
     try:
@@ -24,4 +27,5 @@ def mysql_connection(host, user, passwd, database):
         print("Conexão realizada com sucesso")
         return connection
 
-connection = mysql_connection(HOST, USER, PASSWD, DB)
+
+connection = mysql_connection(environ["HOST"], environ["USER"], environ["PASSWD"], environ["DB"])
