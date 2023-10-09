@@ -8,15 +8,12 @@ from flask_restful import Resource
 from flask import jsonify, request, make_response
 
 from os import environ
-from config_api import app
-from config_mysql import connection
-from _constants import TABLE_REGISTER
+from connection import connection
 
-
-class Register(Resource):
+class User(Resource):
     def get(self):
         try:
-            register_df = pd.read_sql_table(TABLE_REGISTER, connection)
+            register_df = pd.read_sql_table(environ["TABLE_REGISTER"], connection)
             user = request.args.get("user")
             result = register_df.query("@user in user")
 
@@ -49,28 +46,9 @@ class Register(Resource):
 
         data_json["token"] = token
 
-        register_df = pd.read_sql_table(TABLE_REGISTER, connection)
+        register_df = pd.read_sql_table(environ["TABLE_REGISTER"], connection)
         data_df = pd.DataFrame([data_json])
         register_df = pd.concat([register_df, data_df], ignore_index=True)
         
-        register_df.to_sql(TABLE_REGISTER, connection, if_exists="replace", index=False)
+        register_df.to_sql(environ["TABLE_REGISTER"], connection, if_exists="replace", index=False)
         return make_response(jsonify({"message": "Usuário cadastrado com sucesso"}), 200)
-
-
-class VerificaLogin(Resource):
-    def get(self):
-        data_json = request.json
-        register_df = pd.read_sql_table(TABLE_REGISTER, connection)
-        user = data_json["user"]
-        passwd = data_json["passwd"]
-
-        result = register_df.query("@user in user")
-
-        if result.empty:
-            return None
-        else:
-            hash = result.iloc[0, 3]
-            print(hash)
-            if bcrypt.hashpw(passwd.encode('utf-8'), hash.encode('utf-8')) == hash.encode('utf-8'):
-                return make_response(jsonify({"token": result['token']}))
-            return None

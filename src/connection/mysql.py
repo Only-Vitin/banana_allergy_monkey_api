@@ -29,3 +29,5 @@ def mysql_connection(host, user, passwd, database):
 
 
 connection = mysql_connection(environ["HOST"], environ["USER"], environ["PASSWD"], environ["DB"])
+
+cur = connection.connection.cursor()
