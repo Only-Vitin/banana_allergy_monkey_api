@@ -6,7 +6,7 @@ from datetime import date
 from flask_restful import Resource
 from flask import jsonify, request, make_response
 
-from connection import cur
+from connection import cur, connection
 
 
 def query_to_json(columns, lines):
@@ -24,9 +24,9 @@ class User(Resource):
     def get(self):
         token = request.headers.get('Authorization')
         if token:
-            cur.execute(f'''SELECT a.*, b.* FROM user a INNER JOIN token b ON a.id = b.id WHERE b.token = "{token}"''')
+            cur.execute(f'SELECT a.* FROM user a INNER JOIN token b ON a.id = b.id WHERE b.token = "{token}"')
         else:
-            cur.execute("SELECT * FROM token;")
+            cur.execute("SELECT * FROM user;")
 
         columns = [x[0] for x in cur.description]
         lines = cur.fetchall()
@@ -38,17 +38,17 @@ class User(Resource):
 
     def post(self):
         data_json = request.json
-
         passwd = data_json["passwd"]
-        passwd = passwd.encode('utf-8')
         
-        hash = bcrypt.hashpw(passwd, bcrypt.gensalt())
-        data_json["passwd"] = hash
+        hash = bcrypt.hashpw(passwd.encode('utf-8'), bcrypt.gensalt())
+        data_json["passwd"] = hash.decode('utf-8')
 
         date_now = date.today()
-        cur.execute(f'''INSERT INTO user (user, email, name, passwd, registration_date) 
-            VALUES("{data_json['user']}", "{data_json['email']}", "{data_json['name']}", "{data_json['passwd']}", "{date_now}");''')
         
+        cur.execute(f'''INSERT INTO user (user, email, name, passwd, registration_date) VALUES('{data_json['user']}', '{data_json['email']}', 
+            '{data_json['name']}', "{data_json['passwd']}", '{date_now}');''')
+        connection.commit()
+
         response = jsonify({"message" : "Created"})
         response.status_code = 201
         return make_response(response)
