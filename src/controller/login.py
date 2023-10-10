@@ -40,4 +40,3 @@ class Login(Resource):
             response = jsonify({"message" : "Ok"})
             response.status_code = 200
             return make_response(response)
-        
