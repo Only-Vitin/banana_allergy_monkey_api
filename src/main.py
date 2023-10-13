@@ -5,10 +5,8 @@ from flask import Flask
 from flask_restful import Api
 
 from controller import User, Login
-from connection import connection
 
 load_dotenv()
-connection.begin()
 
 app = Flask("Banana Allergy Monkey API")
 app.config["JSON_SORT_KEYS"] = False
