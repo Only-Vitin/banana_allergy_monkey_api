@@ -1,17 +1,12 @@
 from flask import jsonify
 
 from connection import cur
-from utils import query_to_json
+from utils import query_to_json, return_response
 from storage import select_all_users
 
 
-def get_all_users(token):
-    if token:
-        select_all_users()
-    else:
-        response = jsonify({"message" : "Unauthorized"})
-        response.status_code = 401
-        return response
+def get_all_users():
+    select_all_users()
 
     columns = [x[0] for x in cur.description]
     lines = cur.fetchall()

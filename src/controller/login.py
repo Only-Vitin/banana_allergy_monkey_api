@@ -9,5 +9,4 @@ class Login(Resource):
         data_json = request.json
         
         response = login(data_json)
-
         return make_response(response)

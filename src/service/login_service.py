@@ -3,17 +3,15 @@ from datetime import datetime, timedelta
 
 import jwt
 import bcrypt
-from flask import jsonify
 
 from connection import cur, connection
 from storage import select_passwd_id, insert_token
+from utils import return_response
 
 
 def login(data_json):
     if data_json == None:
-        response = jsonify({"message" : "Unauthorized"})
-        response.status_code = 401
-        return response
+        return return_response(401, "Unauthorized")
     
     user = data_json["user"]
     passwd = data_json["passwd"]
@@ -24,9 +22,7 @@ def login(data_json):
         hash = str(result[0])
         id_user = result[1]
     else:
-        response = jsonify({"message" : "Not found"})
-        response.status_code = 404
-        return response
+        return return_response(404, "Not found")
 
     if bcrypt.checkpw(passwd.encode('utf-8'), hash.encode('utf-8')):
         payload = {
@@ -41,6 +37,4 @@ def login(data_json):
         insert_token(id_user, token, date_exp)
         connection.commit()
 
-        response = jsonify({"message" : "Ok"})
-        response.status_code = 200
-        return response
+        return return_response(200, "Ok")
