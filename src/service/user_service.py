@@ -5,7 +5,7 @@ import bcrypt
 
 from connection import cur, connection
 from utils import query_to_json, valid_token, return_response
-from storage import select_user_by_token, insert_user, update_register_by_token
+from storage import select_user_by_token, insert_user, update_register_by_token, delete_register_by_id, select_id_by_token
 
 
 def get_user_by_token(token):
@@ -40,7 +40,7 @@ def register_user(data_json):
     return return_response(201, "Created")
 
 def update_user(token, data_json):
-    response = valid_token(token)
+    response = valid_token(token) ###
 
     passwd = data_json["passwd"]
     hash = bcrypt.hashpw(passwd.encode('utf-8'), bcrypt.gensalt())
@@ -52,4 +52,22 @@ def update_user(token, data_json):
     update_register_by_token(token, data_json["user"], data_json["name"], data_json["email"], data_json["passwd"], date_now)
     connection.commit()
     
+    return return_response(200, "Ok")
+
+def delete_user(token):
+    response = valid_token(token) ###
+
+    select_id_by_token(token)
+    result = cur.fetchone()
+    if result:
+        id_user = result[0]
+    else:
+        return return_response(404, "Not found")
+    
+    print(id_user)
+
+    connection.begin()
+    delete_register_by_id(id_user)
+    connection.commit()
+
     return return_response(200, "Ok")

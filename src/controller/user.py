@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask import request, make_response
 
-from service import get_user_by_token, register_user, update_user
+from service import get_user_by_token, register_user, update_user, delete_user
 
 
 class User(Resource):
@@ -29,4 +29,7 @@ class User(Resource):
         ...
 
     def delete(self):
-        ...
+        token = request.headers.get('Authorization')
+
+        response = delete_user(token)
+        return response

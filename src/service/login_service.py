@@ -37,4 +37,4 @@ def login(data_json):
         insert_token(id_user, token, date_exp)
         connection.commit()
 
-        return return_response(200, "Ok")
+        return token
