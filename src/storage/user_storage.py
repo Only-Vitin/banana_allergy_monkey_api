@@ -2,7 +2,7 @@ from connection import cur
 
 
 def select_user_by_token(token):
-    cur.execute(f'SELECT u.* FROM user u INNER JOIN token t ON u.id = t.id WHERE t.token = "{token}"')
+    cur.execute(f'SELECT u.* FROM user u INNER JOIN token t ON u.id = t.id_user WHERE t.token = "{token}"')
 
 def select_id_by_token(token):
     cur.execute(f'SELECT id_user FROM token WHERE token = "{token}"')

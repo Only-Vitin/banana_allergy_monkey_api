@@ -12,6 +12,9 @@ def get_user_by_token(token):
     response = valid_token(token)
     if response.get_json()["message"] == "Ok":
         select_user_by_token(token)
+        rows_affected = cur.rowcount
+        if rows_affected == 0:
+            return return_response(204, "No rows affected")
 
         columns = [x[0] for x in cur.description]
         lines = cur.fetchall()
@@ -34,7 +37,11 @@ def register_user(data_json):
         
         connection.begin()
         insert_user(data_json["user"], data_json["email"], data_json["name"], data_json["passwd"], date_now)
+        rows_affected = cur.rowcount
         connection.commit()
+
+        if rows_affected == 0:
+                return return_response(204, "No rows affected")
 
         return return_response(201, "Created")
     return null_on_data
@@ -52,7 +59,11 @@ def update_user(token, data_json):
 
             connection.begin()
             update_register_by_token(token, data_json["user"], data_json["name"], data_json["email"], data_json["passwd"], date_now)
+            rows_affected = cur.rowcount
             connection.commit()
+
+            if rows_affected == 0:
+                return return_response(204, "No rows affected")
 
             return response
         return response
@@ -72,7 +83,11 @@ def delete_user(token):
 
         connection.begin()
         delete_register_by_id(id_user)
+        rows_affected = cur.rowcount
         connection.commit()
+
+        if rows_affected == 0:
+            return return_response(204, "No rows affected")
 
         return response
     return response
