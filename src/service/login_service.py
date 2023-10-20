@@ -32,7 +32,7 @@ def login(data_json):
             else:
                 payload = {
                     "username": user,
-                    "exp": datetime.utcnow() + timedelta(hours=1000)
+                    "exp": datetime.utcnow() + timedelta(hours=500)
                 }
                 secret_key = environ["SECRET_KEY"]
                 token = jwt.encode(payload, secret_key, algorithm="HS256")
