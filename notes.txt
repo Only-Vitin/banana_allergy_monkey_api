@@ -1,6 +1,0 @@
-Fazer verificação de email, não pode repetir
-Fazer verificação do user_id na tabela de token
-Fazer as verificações dos comando em SQL, ter certeza que as respostas estão certas (200, 404, 401) Linhas afetadas
-Try Except
-
-Verificar os nomes dos arquivos com o Gi

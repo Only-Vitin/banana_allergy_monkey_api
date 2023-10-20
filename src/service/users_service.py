@@ -1,7 +1,7 @@
 from flask import jsonify
 
 from connection import cur
-from utils import query_to_json, return_response
+from utils import query_to_json
 from storage import select_all_users
 
 

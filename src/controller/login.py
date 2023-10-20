@@ -9,5 +9,7 @@ class Login(Resource):
         data_json = request.json
         
         token = login(data_json)
-        response = jsonify({"Authorization" : f"{token}"})
-        return make_response(response)
+        if type(token) == str:
+            response = jsonify({"Authorization" : f"{token}"})
+            return make_response(response)
+        return make_response(token)

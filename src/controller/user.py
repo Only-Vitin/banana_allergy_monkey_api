@@ -25,9 +25,6 @@ class User(Resource):
         response = update_user(token, data_json)
         return response
 
-    def patch(self):
-        ...
-
     def delete(self):
         token = request.headers.get('Authorization')
 
