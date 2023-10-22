@@ -5,7 +5,7 @@ import jwt
 import bcrypt
 
 from connection import cur, conn
-from storage import insert_token, select_token_by_user
+from storage import insert_token, select_token_by_user, select_passwd_id
 from utils import return_response, verify_none_values_json
 
 
@@ -15,6 +15,7 @@ def login(data_json):
         user = data_json["user"]
         passwd = data_json["passwd"]
 
+        select_passwd_id(user)
         result = cur.fetchone()
         if result:
             hash_value = str(result[0])
