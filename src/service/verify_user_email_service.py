@@ -5,7 +5,7 @@ from connection import cur
 
 def verify_info_on_db(info, data_json):
     null_on_data = verify_none_values_json(data_json)
-    if null_on_data == False:
+    if null_on_data is False:
         try:
             if info == "user":
                 user = data_json["user"]
@@ -17,9 +17,9 @@ def verify_info_on_db(info, data_json):
                 return return_response(404, "Not Found")
         except KeyError:
             return return_response(400, "Bad Request")
-        else:
-            lines = cur.fetchall()
-            if len(lines) == 0:
-                return return_response(200, "Not in database")
-            return return_response(401, "Already registered")
+
+        lines = cur.fetchall()
+        if len(lines) == 0:
+            return return_response(200, "Not in database")
+        return return_response(401, "Already registered")
     return null_on_data

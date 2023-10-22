@@ -1,0 +1,5 @@
+[MESSAGES CONTROL]
+disable = C0114, C0115, C0116, C0327, C0411, E0401, R0903, R0913
+
+[MASTER]
+ignore-patterns = .gitignore, __init__.py
