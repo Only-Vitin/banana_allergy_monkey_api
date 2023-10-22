@@ -10,6 +10,6 @@ class Login(Resource):
 
         token = login(data_json)
         if isinstance(token, str):
-            response = jsonify({"Authorization": f"{token}"})
+            response = jsonify({"authorization": f"{token}"})
             return make_response(response)
         return make_response(token)
