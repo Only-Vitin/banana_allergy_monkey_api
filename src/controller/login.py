@@ -13,3 +13,4 @@ class Login(Resource):
             response = jsonify({"authorization": f"{token}"})
             return make_response(response)
         return make_response(token)
+ 

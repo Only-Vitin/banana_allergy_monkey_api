@@ -20,3 +20,4 @@ api.add_resource(VerifyUserEmail, "/verify/<string:info>")
 
 if __name__ == "__main__":
     app.run()
+ 

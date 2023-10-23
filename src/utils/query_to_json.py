@@ -10,3 +10,4 @@ def query_to_json(columns, lines):
     result_json = json.dumps(data_list)
     result_json = json.loads(result_json)
     return result_json
+ 

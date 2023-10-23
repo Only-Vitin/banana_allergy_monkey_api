@@ -23,3 +23,4 @@ def verify_info_on_db(info, data_json):
             return return_response(200, "Not in database")
         return return_response(409, "Already registered")
     return null_on_data
+ 

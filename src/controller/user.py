@@ -29,3 +29,4 @@ class User(Resource):
 
         response = delete_user(token)
         return response
+ 

@@ -10,3 +10,4 @@ class VerifyUserEmail(Resource):
 
         response = verify_info_on_db(info, data_json)
         return make_response(response)
+ 

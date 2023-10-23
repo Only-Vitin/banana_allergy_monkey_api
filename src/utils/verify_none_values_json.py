@@ -7,3 +7,4 @@ def verify_none_values_json(data_json):
         if value is None or value == "":
             return return_response(400, "Contains null values")
     return False
+ 

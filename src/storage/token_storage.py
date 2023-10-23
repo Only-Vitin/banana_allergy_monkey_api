@@ -21,3 +21,4 @@ def delete_token(token):
 
 def search_token(token):
     cur.execute(f'SELECT * FROM token WHERE token = "{token}";')
+ 

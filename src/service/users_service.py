@@ -15,3 +15,4 @@ def get_all_users():
     result_json = jsonify(result)
     result_json.status_code = 200
     return result_json
+ 

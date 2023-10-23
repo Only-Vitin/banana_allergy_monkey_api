@@ -46,3 +46,4 @@ def update_register_by_token(token, user, name, email, passwd, now):
 def delete_register_by_id(id_user):
     cur.execute(f"""DELETE FROM token WHERE id_user = "{id_user}";""")
     cur.execute(f"""DELETE FROM user WHERE id = "{id_user}";""")
+ 
