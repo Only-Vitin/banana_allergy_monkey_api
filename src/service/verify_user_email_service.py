@@ -21,5 +21,5 @@ def verify_info_on_db(info, data_json):
         lines = cur.fetchall()
         if len(lines) == 0:
             return return_response(200, "Not in database")
-        return return_response(401, "Already registered")
+        return return_response(409, "Already registered")
     return null_on_data

@@ -5,13 +5,9 @@ import bcrypt
 
 from connection import cur, conn
 from utils import query_to_json, valid_token, return_response, verify_none_values_json
-from storage import (
-    select_user_by_token,
-    insert_user,
-    update_register_by_token,
-    delete_register_by_id,
-    select_id_by_token,
-)
+from service.verify_user_email_service import verify_info_on_db
+from storage import select_user_by_token, select_id_by_token
+from storage import insert_user, update_register_by_token, delete_register_by_id
 
 
 def get_user_by_token(token):
@@ -35,6 +31,11 @@ def get_user_by_token(token):
 def register_user(data_json):
     null_on_data = verify_none_values_json(data_json)
     if null_on_data is False:
+        for validation in ["user", "email"]:
+            response = verify_info_on_db(validation, data_json)
+            if response.get_json()["message"] == "Already registered":
+                return return_response(409, "Already registered")
+
         passwd = data_json["passwd"]
         hash_value = bcrypt.hashpw(passwd.encode("utf-8"), bcrypt.gensalt())
         data_json["passwd"] = hash_value.decode("utf-8")
@@ -54,7 +55,6 @@ def register_user(data_json):
 
         if rows_affected == 0:
             return return_response(204, "No rows affected")
-
         return return_response(201, "Created")
     return null_on_data
 
